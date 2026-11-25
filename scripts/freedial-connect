@@ -1,0 +1,21 @@
+#!/bin/zsh
+# Copyright 2026 FreeDial contributors. Licensed under the Apache License, Version 2.0.
+#
+# Usage: freedial-connect <machine>
+#   FREEDIAL_ADDRESS  address to connect to (default <machine>.local); ":3389" is added if no port is given
+#   FREEDIAL_USER     RDP username (default: your macOS login name)
+#
+# Reads the RDP password from the macOS Keychain (service rdp-<machine>) and hands it to
+# FreeRDP's SDL client on stdin, so it never appears on a command line.
+machine=${1:?usage: freedial-connect <machine>}
+user=${FREEDIAL_USER:-$USER}
+addr=${FREEDIAL_ADDRESS:-$machine.local}
+[[ $addr == *:* ]] || addr=$addr:3389
+
+PATH=/opt/homebrew/bin:/usr/local/bin:$PATH
+client=$(command -v sdl-freerdp) || { echo "sdl-freerdp not found; install FreeRDP (brew install freerdp)" >&2; exit 127 }
+
+pw=$(security find-generic-password -s "rdp-$machine" -a "$user" -w 2>/dev/null)
+[[ -n $pw ]] || { echo "No Keychain password saved for $machine (service rdp-$machine, account $user)" >&2; exit 2 }
+
+print -r -- "$pw" | exec "$client" "/v:$addr" "/u:$user" /from-stdin:force /cert:tofu /dynamic-resolution +clipboard
