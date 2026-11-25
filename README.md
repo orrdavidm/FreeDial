@@ -9,16 +9,35 @@ FreeDial is not affiliated with the FreeRDP project.
 
 ## Install
 
-Requirements: macOS 12 or later, the Xcode command line tools (`xcode-select --install`), and FreeRDP
-(`brew install freerdp`; the installer offers to do this).
+Requirements: macOS 12 or later (Apple silicon or Intel) and FreeRDP (`brew install freerdp`; the
+installer offers to do this). No Xcode tools are needed.
 
 ```sh
-./install.sh                 # builds and installs ~/Applications/FreeDial.app
-./install.sh --dest /Applications
+curl -fsSL https://raw.githubusercontent.com/orrdavidm/FreeDial/main/install.sh | zsh
 ```
+
+That downloads the latest prebuilt release, checks its SHA-256, and installs
+`~/Applications/FreeDial.app`. From a clone you can also run:
+
+```sh
+./install.sh                  # same, from the clone
+./install.sh --dest /Applications
+./install.sh --zip FreeDial.zip   # install a zip you already downloaded
+./install.sh --from-source    # build from src/ (needs: xcode-select --install)
+```
+
+The app is ad-hoc signed, not notarized by Apple. The installer clears macOS's download quarantine
+flag, so it opens normally. If you download `FreeDial.zip` yourself and open the app by hand, macOS
+will refuse it; right-click the app and choose Open, or install it with `./install.sh --zip`.
 
 Remove it with `./uninstall.sh`. Add `--purge` to also delete saved addresses, the log, and the
 Keychain passwords.
+
+### Building a release
+
+`./build-release.sh` (needs the Xcode command line tools) builds a universal app and writes
+`dist/FreeDial.zip` and `dist/FreeDial.zip.sha256`. Attach both to a GitHub release under exactly
+those names so the installer's `latest/download` links find them.
 
 ## Use
 
