@@ -12,6 +12,7 @@ rm -rf "$app"
 mkdir -p "$app/Contents/MacOS" "$app/Contents/Resources"
 cp "$exe" "$app/Contents/MacOS/FreeDial"
 cp "$here/freedial-connect" "$app/Contents/Resources/freedial-connect"
+cp "$here/../assets/AppIcon.icns" "$app/Contents/Resources/AppIcon.icns"
 chmod +x "$app/Contents/MacOS/FreeDial" "$app/Contents/Resources/freedial-connect"
 
 cat > "$app/Contents/Info.plist" <<PLIST
@@ -19,6 +20,7 @@ cat > "$app/Contents/Info.plist" <<PLIST
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0"><dict>
 <key>CFBundleExecutable</key><string>FreeDial</string>
+<key>CFBundleIconFile</key><string>AppIcon</string>
 <key>CFBundleIdentifier</key><string>io.github.freedial</string>
 <key>CFBundleName</key><string>FreeDial</string>
 <key>CFBundlePackageType</key><string>APPL</string>
